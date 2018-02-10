@@ -1,5 +1,6 @@
 from rest_framework import permissions
 from rest_framework import status
+from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -23,6 +24,10 @@ class StellarUserViewSet(ModelViewSet):
             return StellarUserSerializer
         else:
             return self.serializer_class
+
+    @list_route(methods=['get'])
+    def social(self, request, *args, **kwargs):
+        return self.list(self, request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
