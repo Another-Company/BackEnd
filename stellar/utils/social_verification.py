@@ -6,6 +6,7 @@ from utils import ValidationException
 class KaKaoTalk:
     @staticmethod
     def account_verification(access_token):
+        # API Response = UID, Expires Time, appID
         url = 'https://kapi.kakao.com/v1/user/access_token_info'
         header = {'Authorization': 'Bearer ' + access_token}
         # status code 400 = Validation Error, 401 code = Token Expiration
@@ -14,12 +15,9 @@ class KaKaoTalk:
         response_dict = response.json()
 
         if response.status_code == 400:
-            raise ValidationException('Accout Verification Validation Error')
+            raise ValidationException('Account Verification Validation Error')
         elif response.status_code == 401:
             raise ValidationException('Token Expiration')
-
-        # if signup:
-        #     response_dict = KaKaoTalk.get_account_info(access_token)
 
         return response_dict
 
@@ -34,6 +32,7 @@ class KaKaoTalk:
 
 
 class FaceBook:
+    # Response = data{UID, ETC...}
     @staticmethod
     def account_verification(access_token):
         url = 'https://graph.facebook.com/debug_token'
@@ -49,11 +48,6 @@ class FaceBook:
             raise ValidationException('Invalid Access Token')
         
         return response_dict
-        
-        # if is_valid:
-        #     return FaceBook.get_account_info(access_token)
-        # else:
-        #     raise ValidationException('Invalid Access Token')
 
     # @staticmethod
     # def get_account_info(access_token):

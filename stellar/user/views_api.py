@@ -1,5 +1,6 @@
 from rest_framework import permissions
 from rest_framework import status
+from rest_framework.authtoken.models import Token
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -25,13 +26,22 @@ class StellarUserViewSet(ModelViewSet):
         else:
             return self.serializer_class
 
+    def generate_token(self, user):
+        token, _ = Token.objects.get_or_create(user=user)
+        return token
+
     @list_route(methods=['get'])
     def social(self, request, *args, **kwargs):
         return self.list(self, request, *args, **kwargs)
 
+    def perform_create(self, serializer):
+        social_object = serializer.save()
+        token = self.generate_token(social_object.user)
+        return social_object, token
+
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        _, token = self.perform_create(serializer)
 
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        return Response(data={'user': serializer.data, 'token': str(token)}, status=status.HTTP_200_OK)

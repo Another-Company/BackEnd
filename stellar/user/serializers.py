@@ -13,6 +13,8 @@ class StellarUserSerializer(serializers.ModelSerializer):
 
 
 class SocialAccountSerializer(serializers.ModelSerializer):
+    token = serializers.CharField(max_length=256, required=False)
+
     class Meta:
         model = SocialAccount
         fields = (
@@ -21,12 +23,13 @@ class SocialAccountSerializer(serializers.ModelSerializer):
             'provider',
             'access_token',
             'uid',
-            'phone_number'
+            'phone_number',
+            'token'
         )
-        read_only_fields = ('uid', 'phone_number')
+        read_only_fields = ('uid', 'phone_number', 'token')
         extra_kwargs = {
             'access_token': {'write_only': True},
-            'email': {'required': False}
+            'email': {'required': False},
         }
 
     def create(self, validated_data):
@@ -34,7 +37,6 @@ class SocialAccountSerializer(serializers.ModelSerializer):
         provider = validated_data.get('provider', None)
         email = validated_data.get('email', None)
         email_verified = validated_data.get('email_verified', None)
-        print(validated_data)
 
         if email is None:
             raise ValidationException('Email Address is Missing')
@@ -71,43 +73,3 @@ class SocialAccountSerializer(serializers.ModelSerializer):
             social_object.access_token = access_token
             social_object.save()
         return social_object
-
-
-        # if provider == 'KT':
-        #
-        #     user_info = KaKaoTalk.account_verification(access_token, signup=True)
-        #
-        #     if (user_info['kaccount_email'] == '' or not user_info['kaccount_email_verified']) and email is None:
-        #         raise ValidationException('Please Enter the Email Address and Retry')
-        #     else:
-        #
-        #         user_object, created = StellarUser.objects.get_or_create(email=user_info['kaccount_email'])
-        #         social_object, created = SocialAccount.objects.get_or_create(uid=user_info['id'],
-        #                                                                      email=user_info['kaccount_email'],
-        #                                                                      provider=provider,
-        #                                                                      defaults={'user': user_object,
-        #                                                                                'email_verified': user_info['kaccount_email_verified'],
-        #                                                                                'access_token': access_token,
-        #                                                                                })
-        #         return social_object
-        # elif provider == 'FB':
-        #     # 흠 페북은 이메일 인증을 따로 받아야 할듯...
-        #     # user_info has id, name, email
-        #     user_info = FaceBook.account_verification(access_token, signup=True)
-        #     user_mail = user_info.get('email', None)
-        #
-        #     if user_mail is None and email is None:
-        #         raise ValidationException('Please Enter the Email Address and Retry')
-        #     else:
-        #         user_object, created = StellarUser.objects.get_or_create(email=user_mail)
-        #         social_object, created = SocialAccount.objects.get_or_create(uid=user_info['id'],
-        #                                                                      email=user_mail if user_mail is not None else email,
-        #                                                                      provider=provider,
-        #                                                                      defaults={'user': user_object,
-        #                                                                                'access_token': access_token,})
-        #
-        #         if social_object.access_token != access_token:
-        #             social_object.update(access_token=access_token)
-        # else:
-        #     raise ValidationException('Not Allow Provider')
-
