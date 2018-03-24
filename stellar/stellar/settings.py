@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 import json
 import os
+
+import firebase_admin
+from firebase_admin import credentials
+
 DEBUG = os.environ.get('MODE') == 'DEBUG'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -121,6 +125,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'user.StellarUser'
 APP_ID = CONF_FILE['KAKAOTALK']['APP_ID']
+FIREBASE_CREDENTIAL = os.path.join(CONF_DIR, 'stellar-e63ed-firebase-adminsdk-pm043-078da0110b.json')
+cred = credentials.Certificate(FIREBASE_CREDENTIAL)
+default_app = firebase_admin.initialize_app(cred)
 
 
 # Internationalization

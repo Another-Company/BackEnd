@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from album.models import Photo
+from album.models import Photo, Album
 from utils.gps import get_gps
 
 
@@ -23,3 +23,10 @@ class PhotoSerializer(serializers.ModelSerializer):
         photo_object = Photo(user=user, latitude=latitude, longitude=longitude, **validated_data)
         photo_object.save()
         return photo_object
+
+
+class AlbumSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Album
+        fields = ('id', 'title', 'created_date', 'user_id')

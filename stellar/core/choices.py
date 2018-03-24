@@ -1,5 +1,6 @@
 
 PROVIDER_CHOICES = {
     ('KT', 'KaKaoTalk'),
-    ('FB', 'FaceBook')
+    ('FB', 'FaceBook'),
+    ('GG', 'Google')
 }
