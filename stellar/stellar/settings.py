@@ -129,6 +129,8 @@ FIREBASE_CREDENTIAL = os.path.join(CONF_DIR, 'stellar-e63ed-firebase-adminsdk-pm
 cred = credentials.Certificate(FIREBASE_CREDENTIAL)
 default_app = firebase_admin.initialize_app(cred)
 
+# Google Map reverse_geocoding API Key
+GOOGLE_API = CONF_FILE['GOOGLE_MAP']['API_KEY']
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
